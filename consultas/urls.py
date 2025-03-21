@@ -1,8 +1,8 @@
 from django.urls import path
-from .views import index, close
+from .views import index, close, seedAsociados
 
 urlpatterns = [
     path('', index, name='index'),
     path('close/', close, name="close"),
-    # path('createAsesores/', seedUserus, name="created")
+    path('createAndUpdateAsociados/', seedAsociados, name="created")
 ]
