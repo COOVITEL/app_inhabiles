@@ -3,13 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development ./node_modules/.bin/tailwindcss --postcss -i ./src/styles.css -o ../static/css/dist/styles.css -w",
-    "build": "cross-env NODE_ENV=production ./node_modules/.bin/tailwindcss --postcss -i ./src/styles.css -o ../static/css/dist/styles.css"
+    "dev": "npx tailwindcss -i ./src/styles.css -o ../static/css/dist/styles.css --watch",
+    "build": "cross-env NODE_ENV=production npx tailwindcss -i ./src/styles.css -o ../static/css/dist/styles.css"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "cross-env": "^7.0.3",
-    "tailwindcss": "^4.0.14"
+    "tailwindcss": "^4.0.15"
   }
 }
