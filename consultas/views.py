@@ -8,40 +8,39 @@ from django.db import transaction
 import pandas as pd
 
 def index(request):
-    
     if request.method == 'POST':
         form = request.POST.get("form_id")
-        
+
         if form == "form-consulta":
             cedula = request.POST.get("cedula", "").strip()
-            request.session.update({
-                'cedula': cedula
-            })
-            
+            request.session.update({'cedula': cedula})
+
             asociado = Asociado.objects.filter(cedula=cedula).first()
             if not asociado:
                 messages.error(request, "No se encontró ningún asociado con ese número de identificación.")
             else:
-                request.session.update({
-                    'name': asociado.nombre,
-                })
+                registros = ResgistrosAsociado.objects.filter(asociado=asociado).order_by('-fecha')
+                request.session.update({'name': asociado.nombre})
+
                 return render(request, 'index.html', {
                     'asociado': asociado,
+                    'registros': registros,  # Agregar registros al contexto
                 })
-            
+
         elif form == "form_entrega":
             try:
                 with transaction.atomic():
                     ResgistrosAsociado.objects.create(
-                        asociado=request.session.get('name'),
+                        asociado=Asociado.objects.get(cedula=request.session.get('cedula')),
                         asesor=request.session.get('name'),
-                        observacion=request.session.get('name'),
+                        observacion=request.POST.get('razon'),
                     )
                 messages.success(request, "Se ha registrado con éxito la entrega.")
             except Exception as e:
                 messages.error(request, f"Ocurrió un error al registrar la entrega: {str(e)}")
-            
+
     return render(request, 'index.html')
+
 
 def close(request):
     return redirect ('index')
