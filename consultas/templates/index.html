@@ -42,6 +42,20 @@
                         <p><span class="font-semibold">Celular:</span> {{ asociado.movil }}</p>
                     </div>
                 </div>
+                <div class="grid grid-cols-3 gap-4 border-t border-gray-300 py-4 px-6 text-center text-sm">
+                    <div class="border-r border-blue-400 p-2">
+                        <p class="font-semibold">Prioridad Productos</p>
+                        <p class="text-lg font-bold">{{ prioridad1 }}</p>
+                    </div>
+                    <div class="border-r border-blue-400 p-2">
+                        <p class="font-semibold">Prioridad CDAT</p>
+                        <p class="text-lg font-bold">{{ prioridad2 }}</p>
+                    </div>
+                    <div class="p-2">
+                        <p class="font-semibold">Prioridad Cartera</p>
+                        <p class="text-lg font-bold">{{ prioridad3 }}</p>
+                    </div>
+                </div>
                 <div class="grid grid-cols-4 gap-4 border-t border-gray-300 py-4 px-6 text-center text-sm">
                     <div class="border-r border-blue-400 p-2">
                         <p class="font-semibold">Cooviahorro</p>
@@ -60,7 +74,7 @@
                     </div>
                     <div class="p-2">
                         <p class="font-semibold">Cartera</p>
-                        <p>Monto: {{ asociado.cartera|intcomma }}</p>
+                        <p>Monto: ${{ asociado.cartera|intcomma }}</p>
                     </div>
                 </div>
                 <div class="mt-4 p-4 bg-gray-100 rounded-lg border border-gray-300">
@@ -69,7 +83,7 @@
                         {% for registro in registros %}
                             <li class="p-2 border-b border-gray-300">
                                 <p class="text-sm"><span class="font-semibold">Fecha:</span> {{ registro.fecha|date:"d/m/Y H:i" }}</p>
-                                <p class="text-sm"><span class="font-semibold">Asociado:</span> {{ registro.asociado.nombre }}</p>
+                                {% comment %} <p class="text-sm"><span class="font-semibold">Asociado:</span> {{ registro.asociado.nombre }}</p> {% endcomment %}
                                 <p class="text-sm"><span class="font-semibold">Asesor:</span> {{ registro.asesor }}</p>
                                 <p class="text-sm"><span class="font-semibold">Observación:</span> {{ registro.observacion }}</p>
                             </li>
@@ -90,7 +104,7 @@
                     
                     <div class="flex justify-end gap-4 mt-4">
                         <a href="{% url 'close' %}" class="bg-red-400 text-white px-6 py-2 rounded-md hover:bg-red-600 transition">Cancelar</a>
-                        <button id="entrega" type="submit" class="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blueCoovitel transition">Entregar</button>
+                        <button id="entrega" type="submit" class="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blueCoovitel transition">Registrar</button>
                     </div>
                 </form>
             </div>

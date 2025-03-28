@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, HttpResponse
 from .models import Asociado, ResgistrosAsociado
 from django.contrib import messages
 from django.utils.timezone import localtime
-from .utils import setValue
+from .utils import prioridadProductos, prioridadCdat, prioridadCartera
 from django.core.cache import cache
 from django.db import transaction
 import pandas as pd
@@ -23,10 +23,17 @@ def index(request):
             else:
                 registros = ResgistrosAsociado.objects.filter(asociado=asociado).order_by('-fecha')
                 request.session.update({'asociado_nombre': asociado.nombre})  # Changed session key to 'asociado_nombre'
-
+                numCoovi = asociado.numeroCooviaho
+                numCdat = asociado.numeroCdat
+                numVista = asociado.numeroAhorro
+                valorCdat = asociado.cantidadCdat
+                valorCartera = asociado.cartera
                 return render(request, 'index.html', {
                     'asociado': asociado,
-                    'registros': registros,  # Agregar registros al contexto
+                    'registros': registros,
+                    'prioridad1': prioridadProductos(int(numCoovi), int(numCdat), int(numVista)),
+                    'prioridad2': prioridadCdat(int(valorCdat)),
+                    'prioridad3': prioridadCartera(int(valorCartera)),
                 })
 
         elif form == "form_entrega":
@@ -38,9 +45,9 @@ def index(request):
                         asesor=asesor_name,  # Use the asesor name from the form
                         observacion=request.POST.get('razon'),
                     )
-                messages.success(request, "Se ha registrado con éxito la entrega.")
+                messages.success(request, "Se ha registrado la observación")
             except Exception as e:
-                messages.error(request, f"Ocurrió un error al registrar la entrega: {str(e)}")
+                messages.error(request, f"Ocurrió un error al registrar el seguimiento: {str(e)}")
 
     return render(request, 'index.html')
 
@@ -49,7 +56,7 @@ def close(request):
     return redirect ('index')
 
 def seedAsociados(request):
-    df = pd.read_excel('BASE_INACTIVIDAD_90_120.xlsx', sheet_name='INACTIVIDAD_91_120', skiprows=1)
+    df = pd.read_excel('BASE_INACTIVIDAD_90_120.xlsx', sheet_name='INACTIVIDAD_91_120', skiprows=0)
     asociados = df.values.tolist()
     for asociado in asociados:
         exist = Asociado.objects.filter(cedula=asociado[0]).first()
@@ -137,13 +144,8 @@ def proxy_asesores(request):
 
     try:
         response = requests.get(url, headers=headers)
-
-        print(f"🔹 Estado de respuesta: {response.status_code}")  # Imprime el código de estado
-        print(f"🔹 Respuesta JSON: {response.text}")  # Muestra el contenido de la respuesta
-
         response.raise_for_status()  # Si no es 2xx, lanza error
         return JsonResponse(response.json(), safe=False)
 
     except requests.exceptions.RequestException as e:
-        print(f"❌ Error al realizar la solicitud: {e}")  # Imprime el error exacto
         return JsonResponse({"error": f"No se pudo obtener la lista de asesores: {str(e)}"}, status=500)
