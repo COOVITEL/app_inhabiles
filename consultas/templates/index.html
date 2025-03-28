@@ -1,10 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
-
+{% load humanize %}
 <div class="max-h-screen bg-back">
-
-
     {% if messages %}
         <div class="absolute top-36 right-10" id="alert-message">
             {% for message in messages %}
@@ -24,20 +22,16 @@
     {% if asociado %}
         <div class="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm">
             <div class="relative bg-white w-[900px] max-w-full h-[550px] rounded-lg shadow-xl border-4 border-red-400 overflow-auto flex flex-col">
-                
                 <a class="absolute top-4 right-4 hover:scale-110 transition-transform duration-200" href="{% url 'close' %}">
                     {% include "close.html" %}
                 </a>
-        
                 <div class="p-6 flex-grow">
                     <h2 class="text-blueCoovitel font-semibold text-2xl">Seguimiento Asociado Inhabil</h2>
                     <div class="h-1 w-full bg-red-400 my-3"></div>
-                    
                     <div class="grid grid-cols-2 gap-4 text-lg">
                         <p><span class="font-semibold">Asociado:</span> {{ asociado.nombre }}</p>
                         <p><span class="font-semibold">Cédula:</span> {{ asociado.cedula }}</p>
                     </div>
-                    
                     <div class="grid grid-cols-3 gap-4 text-sm mt-4">
                         <p><span class="font-semibold">Ubicación:</span> {{ asociado.ubicacion }}</p>
                         <p><span class="font-semibold">Nómina:</span> {{ asociado.nomina }}</p>
@@ -48,26 +42,25 @@
                         <p><span class="font-semibold">Celular:</span> {{ asociado.movil }}</p>
                     </div>
                 </div>
-                
                 <div class="grid grid-cols-4 gap-4 border-t border-gray-300 py-4 px-6 text-center text-sm">
                     <div class="border-r border-blue-400 p-2">
                         <p class="font-semibold">Cooviahorro</p>
                         <p>Número: {{ asociado.numeroCooviaho }}</p>
-                        <p>Cantidad: {{ asociado.cantidadCooviaho }}</p>
+                        <p>Cantidad: {{ asociado.cantidadCooviaho|intcomma }}</p>
                     </div>
                     <div class="border-r border-blue-400 p-2">
                         <p class="font-semibold">AhorroVista</p>
                         <p>Número: {{ asociado.numeroAhorro }}</p>
-                        <p>Cantidad: {{ asociado.cantidadAhorro }}</p>
+                        <p>Cantidad: {{ asociado.cantidadAhorro|intcomma }}</p>
                     </div>
                     <div class="border-r border-blue-400 p-2">
                         <p class="font-semibold">CDATs</p>
                         <p>Número: {{ asociado.numeroCdat }}</p>
-                        <p>Cantidad: {{ asociado.cantidadCdat }}</p>
+                        <p>Cantidad: {{ asociado.cantidadCdat|intcomma }}</p>
                     </div>
                     <div class="p-2">
                         <p class="font-semibold">Cartera</p>
-                        <p>Monto: {{ asociado.cartera }}</p>
+                        <p>Monto: {{ asociado.cartera|intcomma }}</p>
                     </div>
                 </div>
                 <div class="mt-4 p-4 bg-gray-100 rounded-lg border border-gray-300">
@@ -76,18 +69,23 @@
                         {% for registro in registros %}
                             <li class="p-2 border-b border-gray-300">
                                 <p class="text-sm"><span class="font-semibold">Fecha:</span> {{ registro.fecha|date:"d/m/Y H:i" }}</p>
-                                <p class="text-sm"><span class="font-semibold">Asociado:</span> {{ registro.asociado }}</p>
+                                <p class="text-sm"><span class="font-semibold">Asociado:</span> {{ registro.asociado.nombre }}</p>
+                                <p class="text-sm"><span class="font-semibold">Asesor:</span> {{ registro.asesor }}</p>
                                 <p class="text-sm"><span class="font-semibold">Observación:</span> {{ registro.observacion }}</p>
                             </li>
                         {% endfor %}
                     </ul>
                 </div>
-        
                 <form method="POST" id="form_entrega" class="p-6 flex flex-col flex-grow">
                     {% csrf_token %}
-                    <input type="hidden" name="form_id" value="form_entrega">
+                    <label class="block font-semibold mb-2 mt-4">Seleccionar Asesor</label>
+                    <select name="asesor" id="asesor-select" required class="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-300">
+                        <option value="" disabled selected>Seleccione un asesor</option>
+                    </select>
+                    <input type="hidden" name="asesor_nombre" id="asesor-nombre">
                     
-                    <label class="block font-semibold mb-2">Motivos para la entrega del obsequio</label>
+                    <input type="hidden" name="form_id" value="form_entrega">
+                    <label class="block font-semibold mb-2">Observaciones</label>
                     <textarea name="razon" required class="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-300 min-h-[150px]" rows="4" placeholder="Ingresa los motivos..."></textarea>
                     
                     <div class="flex justify-end gap-4 mt-4">
@@ -97,13 +95,9 @@
                 </form>
             </div>
         </div>
-    
     {% endif %}
-
     <div class="container mx-auto">
-
         <h1 class="text-3xl font-bold font-noto text-center m-4 text-blue-900 text-blueCoovitel">Seguimiento Asociados Coovitel</h1>
-        
         <div class="w-full h-auto min-h-[400px] flex flex-row justify-around">
             <form
                 method="POST"
@@ -112,7 +106,6 @@
                 id="form-consulta">
                 {% csrf_token %}
                 <input type="hidden" name="form_id" value="form-consulta">
-                
                 <div class="space-y-4">            
                     <div>
                         <label class="block text-base font-medium text-white">Cédula (ASOCIADO)</label>
@@ -121,7 +114,6 @@
                         </div>
                     </div>
                 </div>
-            
                 <div class="flex justify-end space-x-4 mt-6">
                     <button
                         type="submit"
@@ -136,35 +128,28 @@
             <div class="bg-[url('/static/images/background.webp')] w-[800px] h-auto bg-cover bg-center rounded-lg">
             </div>
         </div>
-
         <div class="text-center text-sm text-gray-600 mt-8">
             Copyright © 2025. Cooperativa Empresarial de Ahorro y Crédito - COOVITEL. Todos los derechos reservados.
         </div>
     </div>
 </div>
-
 <script>
     const form = document.getElementById('form-consulta');
     const submitButton = document.getElementById('buscar');
-
     form.addEventListener('submit', function (event) {
-        // Agregar el atributo disabled al botón
         submitButton.disabled = true;
-
-        // Cambiar el texto del botón (opcional)
         submitButton.textContent = 'Buscando...';
-
-        // Permitir que el formulario se envíe
     });
-
     const formEntrega = document.getElementById('form_entrega');
     const entregaButton = document.getElementById('entrega');
 
-    formEntrega.addEventListener('submit', function (event) {
+    if (formEntrega) {
+        formEntrega.addEventListener('submit', function (event) {
         entregaButton.disabled = true;
-        entregaButton.textContent = 'Entregando'
-    })
-
+        entregaButton.textContent = 'Entregando';
+        })
+    };
+    
     document.addEventListener("DOMContentLoaded", function () {
         const alertMessage = document.getElementById('alert-message');
         if (alertMessage) {
@@ -172,7 +157,39 @@
                 alertMessage.classList.add('hidden');
             }, 3000);
         }
+
+        fetch('http://127.0.0.1:8000/proxy/asesores/')
+        .then(response => {
+            console.log('HTTP Response:', response); // Depuración: Verifica el estado de la respuesta
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Asesores data:', data); // Depuración: Verifica los datos recibidos
+            const asesorSelect = document.getElementById('asesor-select');
+            const asesorNombreInput = document.getElementById('asesor-nombre');
+            if (Array.isArray(data)) {
+                data.forEach(asesor => {
+                    if (asesor.name) { // Cambiado a 'name'
+                        const option = document.createElement('option');
+                        option.value = asesor.id;
+                        option.textContent = asesor.name; // Cambiado a 'name'
+                        asesorSelect.appendChild(option);
+                    } else {
+                        console.error('El asesor no tiene un nombre válido:', asesor);
+                    }
+                });
+            } else {
+                console.error('Formato inesperado de datos:', data);
+            }
+
+            asesorSelect.addEventListener('change', function () {
+                const selectedOption = asesorSelect.options[asesorSelect.selectedIndex];
+                asesorNombreInput.value = selectedOption.textContent;
+            });
+        });
     });
 </script>
-
 {% endblock content %}

@@ -6,6 +6,8 @@ from .utils import setValue
 from django.core.cache import cache
 from django.db import transaction
 import pandas as pd
+import requests
+from django.http import JsonResponse
 
 def index(request):
     if request.method == 'POST':
@@ -20,7 +22,7 @@ def index(request):
                 messages.error(request, "No se encontró ningún asociado con ese número de identificación.")
             else:
                 registros = ResgistrosAsociado.objects.filter(asociado=asociado).order_by('-fecha')
-                request.session.update({'name': asociado.nombre})
+                request.session.update({'asociado_nombre': asociado.nombre})  # Changed session key to 'asociado_nombre'
 
                 return render(request, 'index.html', {
                     'asociado': asociado,
@@ -30,9 +32,10 @@ def index(request):
         elif form == "form_entrega":
             try:
                 with transaction.atomic():
+                    asesor_name = request.POST.get('asesor_nombre')  # Get the asesor name from the form
                     ResgistrosAsociado.objects.create(
                         asociado=Asociado.objects.get(cedula=request.session.get('cedula')),
-                        asesor=request.session.get('name'),
+                        asesor=asesor_name,  # Use the asesor name from the form
                         observacion=request.POST.get('razon'),
                     )
                 messages.success(request, "Se ha registrado con éxito la entrega.")
@@ -124,3 +127,23 @@ def seedAsociados(request):
             if updated:
                 exist.save()
     return HttpResponse("Se crearon y actualizaron los registros de forma correcta")
+
+
+def proxy_asesores(request):
+    url = "https://adminsimuladores.coovitel.coop/api/asesores/"
+    headers = {
+        "Authorization": "Token c75ac915b957a299350028888cf832efa86e5b1c"
+    }
+
+    try:
+        response = requests.get(url, headers=headers)
+
+        print(f"🔹 Estado de respuesta: {response.status_code}")  # Imprime el código de estado
+        print(f"🔹 Respuesta JSON: {response.text}")  # Muestra el contenido de la respuesta
+
+        response.raise_for_status()  # Si no es 2xx, lanza error
+        return JsonResponse(response.json(), safe=False)
+
+    except requests.exceptions.RequestException as e:
+        print(f"❌ Error al realizar la solicitud: {e}")  # Imprime el error exacto
+        return JsonResponse({"error": f"No se pudo obtener la lista de asesores: {str(e)}"}, status=500)
