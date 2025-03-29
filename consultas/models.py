@@ -22,7 +22,17 @@ class Asociado(models.Model):
     
     def __str__(self):
         return f"{self.nombre} - {self.cedula}"
+    
+    def afiliacion(self):
+        return self.fechaultimaAfiliacion.split(" ")[0]
 
+    def anti(self):
+        return self.antiguedad.split(" ")[0]
+    
+    def tel(self):
+        if self.telefono != "nan":
+            return self.telefono.split(".")[0]
+        return "No registrado"
 
 class ResgistrosAsociado(models.Model): 
     asociado = models.ForeignKey(Asociado, on_delete=models.CASCADE)
