@@ -9,6 +9,7 @@ class Asociado(models.Model):
     tipoAsociado = models.CharField(max_length=200)
     fechaultimaAfiliacion = models.CharField(max_length=200)
     antiguedad = models.CharField(max_length=200)
+    acumAportes = models.CharField(max_length=200, blank=True, null=True)
     telefono = models.CharField(max_length=200)
     movil = models.CharField(max_length=200)
     correo = models.CharField(max_length=200, blank=True, null=True)
@@ -34,6 +35,10 @@ class Asociado(models.Model):
         if self.telefono != "nan":
             return self.telefono.split(".")[0]
         return "No registrado"
+    
+    def setAcumuladoAportes(self):
+        if self.acumAportes:
+            return self.acumAportes.split(".")[0]
 
 class ResgistrosAsociado(models.Model): 
     asociado = models.ForeignKey(Asociado, on_delete=models.CASCADE)
