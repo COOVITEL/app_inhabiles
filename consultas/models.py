@@ -11,6 +11,7 @@ class Asociado(models.Model):
     antiguedad = models.CharField(max_length=200)
     telefono = models.CharField(max_length=200)
     movil = models.CharField(max_length=200)
+    correo = models.CharField(max_length=200, blank=True, null=True)
     cartera = models.CharField(max_length=200)
     aportes = models.CharField(max_length=200)
     numeroAhorro = models.CharField(max_length=200)

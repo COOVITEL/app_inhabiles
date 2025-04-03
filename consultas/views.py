@@ -71,6 +71,7 @@ def seedAsociados(request):
                 antiguedad=asociado[13],
                 telefono=asociado[33],
                 movil=asociado[34],
+                correo=asociado[35],
                 cartera=asociado[63],
                 aportes=asociado[28],
                 numeroAhorro=asociado[57],
@@ -106,6 +107,9 @@ def seedAsociados(request):
                 updated = True
             if exist.movil != asociado[34]:
                 exist.movil = asociado[34]
+                updated = True
+            if exist.correo != asociado[35]:
+                exist.correo = asociado[35]
                 updated = True
             if exist.cartera != asociado[63]:
                 exist.cartera = asociado[63]

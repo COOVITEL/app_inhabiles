@@ -40,12 +40,17 @@
                         <p><span class="font-semibold">Antigüedad:</span> {{ asociado.anti }}</p>
                         <p><span class="font-semibold">Teléfono Fijo:</span> {{ asociado.tel }}</p>
                         <p><span class="font-semibold">Celular:</span> {{ asociado.movil }}</p>
+                        <p><span class="font-semibold">Correo:</span> {{ asociado.correo }}</p>
                     </div>
                 </div>
                 <div class="grid grid-cols-3 gap-4 border-t border-gray-300 py-4 px-6 text-center text-sm">
                     <div class="border-r border-blue-400 p-2">
                         <p class="font-semibold">Prioridad Productos</p>
-                        <p class="text-lg font-bold">{{ prioridad1 }}</p>
+                        <p class="text-lg font-bold 
+                        {% if prioridad1 == 'Baja' %} bg-green-500 text-white {% endif %}
+                        {% if prioridad1 == 'Media' %} bg-yellow-800 text-white {% endif %}
+                        {% if prioridad1 == 'Alta' %} bg-red-800 text-white {% endif %}
+                        ">{{ prioridad1 }}</p>
                     </div>
                     <div class="border-r border-blue-400 p-2">
                         <p class="font-semibold">Prioridad CDAT</p>
