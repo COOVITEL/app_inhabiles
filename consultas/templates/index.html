@@ -26,8 +26,13 @@
                     {% include "close.html" %}
                 </a>
                 <div class="p-6 flex-grow">
-                    <h2 class="text-blueCoovitel font-semibold text-2xl">Seguimiento Asociado Inhabil</h2>
+                    <h2 class="text-blueCoovitel font-semibold text-2xl">Seguimiento Asociado Inhábil</h2>
                     <div class="h-1 w-full bg-red-400 my-3"></div>
+                    {% if prioridad1 == "Alta" or prioridad2 == 'Alta' or prioridad3 == 'Alta' %}
+                        <p class="text-xl font-bold text-black bg-red-100 border-4 border-red-700 items-center justify-center rounded-md p-2 text-center my-2">
+                            Asociado de prioridad ALTA, hacer seguimiento y no dejar ir.
+                        </p>
+                    {% endif %}
                     <div class="grid grid-cols-2 gap-4 text-lg">
                         <p><span class="font-semibold">Asociado:</span> {{ asociado.nombre }}</p>
                         <p><span class="font-semibold">Cédula:</span> {{ asociado.cedula }}</p>
@@ -47,20 +52,29 @@
                     <div class="border-r border-blue-400 p-2">
                         <p class="font-semibold">Prioridad Productos</p>
                         <p class="text-lg font-bold 
-                        {% if prioridad1 == 'Baja' %} bg-green-500 text-white {% endif %}
-                        {% if prioridad1 == 'Media' %} bg-yellow-800 text-white {% endif %}
-                        {% if prioridad1 == 'Alta' %} bg-red-800 text-white {% endif %}
+                            {% if prioridad1 == 'Baja' %} bg-green-500 text-white {% endif %}
+                            {% if prioridad1 == 'Media' %} bg-yellow-400 text-white {% endif %}
+                            {% if prioridad1 == 'Alta' %} bg-red-500 text-white {% endif %}
                         ">{{ prioridad1 }}</p>
                     </div>
                     <div class="border-r border-blue-400 p-2">
                         <p class="font-semibold">Prioridad CDAT</p>
-                        <p class="text-lg font-bold">{{ prioridad2 }}</p>
+                        <p class="text-lg font-bold 
+                            {% if prioridad2 == 'Baja' %} bg-green-500 text-white {% endif %}
+                            {% if prioridad2 == 'Media' %} bg-yellow-400 text-white {% endif %}
+                            {% if prioridad2 == 'Alta' %} bg-red-500 text-white {% endif %}
+                        ">{{ prioridad2 }}</p>
                     </div>
                     <div class="p-2">
                         <p class="font-semibold">Prioridad Cartera</p>
-                        <p class="text-lg font-bold">{{ prioridad3 }}</p>
+                        <p class="text-lg font-bold 
+                            {% if prioridad3 == 'Baja' %} bg-green-500 text-white {% endif %}
+                            {% if prioridad3 == 'Media' %} bg-yellow-400 text-white {% endif %}
+                            {% if prioridad3 == 'Alta' %} bg-red-500 text-white {% endif %}
+                        ">{{ prioridad3 }}</p>
                     </div>
                 </div>
+                
                 <div class="grid grid-cols-4 gap-4 border-t border-gray-300 py-4 px-6 text-center text-sm">
                     <div class="border-r border-blue-400 p-2">
                         <p class="font-semibold">Cooviahorro</p>

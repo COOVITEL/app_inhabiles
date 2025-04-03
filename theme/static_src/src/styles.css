@@ -6,3 +6,20 @@
     mask-image: linear-gradient(to bottom, black 20%, transparent 100%);
     -webkit-mask-image: linear-gradient(to bottom, black 20%, transparent 100%);
 }
+
+.beat {
+    animation: move 0.8s infinite alternate;
+}
+
+@keyframes move {
+    0% {
+        transform: scale(1, 1);
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        transform: scale(1.1);
+        opacity: 0;
+    }
+}
