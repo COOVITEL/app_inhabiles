@@ -49,33 +49,94 @@
                         <p><span class="font-semibold">Acumulado Aportes:</span> $ {{ asociado.setAcumuladoAportes|intcomma }}</p>
                     </div>
                 </div>
-                <div class="grid grid-cols-3 gap-4 border-t border-gray-300 py-4 px-6 text-center text-sm">
-                    <div class="border-r border-blue-400 p-2">
-                        <p class="font-semibold">Prioridad Productos</p>
-                        <p class="text-lg font-bold 
+                <div class="grid grid-cols-3 gap-4 border-t border-gray-300 py-4 px-6 text-center text-sm overflow-visible">
+                    <!-- Prioridad Productos -->
+                    <div class="border-r border-blue-400 p-2 relative group">
+                        <div class="flex justify-center items-center gap-3">
+                            <p class="font-semibold">Prioridad Productos</p>
+                            <span class="relative z-10">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500 cursor-pointer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <line x1="12" y1="16" x2="12" y2="12" />
+                                    <circle cx="12" cy="8" r="1" />
+                                </svg>                                  
+                                <div class="absolute bottom-full mb-3 left-1/2 -translate-x-1/2 w-72 text-[0.7rem] text-gray-800 bg-white border border-red-400 rounded-xl shadow-md px-4 py-2 z-50 opacity-0 group-hover:opacity-100 transition duration-300 pointer-events-none">
+                                    Prioridad Baja: 1 Producto
+                                    <br>Prioridad Media: 2 Productos
+                                    <br>Prioridad Alta: 3 Productos
+                                    <div class="absolute bottom-[-6px] left-1/2 -translate-x-1/2 w-3 h-3 bg-white border-l border-t border-red-400 rotate-45"></div>
+                                </div>
+                            </span>
+                        </div>
+                        <p class="text-lg font-bold mt-3
                             {% if prioridad1 == 'Baja' %} bg-green-500 text-white {% endif %}
                             {% if prioridad1 == 'Media' %} bg-yellow-400 text-white {% endif %}
                             {% if prioridad1 == 'Alta' %} bg-red-500 text-white {% endif %}
-                        ">{{ prioridad1 }}</p>
+                            rounded px-3 py-1 inline-block
+                        ">
+                            {{ prioridad1 }}
+                        </p>
                     </div>
-                    <div class="border-r border-blue-400 p-2">
-                        <p class="font-semibold">Prioridad CDAT</p>
-                        <p class="text-lg font-bold 
+                
+                    <!-- Prioridad CDAT -->
+                    <div class="border-r border-blue-400 p-2 relative group">
+                        <div class="flex justify-center items-center gap-3">
+                            <p class="font-semibold">Prioridad CDAT</p>
+                            <span class="relative z-10">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500 cursor-pointer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <line x1="12" y1="16" x2="12" y2="12" />
+                                    <circle cx="12" cy="8" r="1" />
+                                </svg>
+                                  
+                                <div class="absolute bottom-full mb-3 left-1/2 -translate-x-1/2 w-72 text-[0.7rem] text-gray-800 bg-white border border-red-400 rounded-xl shadow-md px-4 py-2 z-50 opacity-0 group-hover:opacity-100 transition duration-300 pointer-events-none">
+                                    Prioridad Baja: >= 100.000 A 1.000.000
+                                    <br> Prioridad Media : > 1.000.000 A < 10.000.000
+                                    <br> Prioridad Alta : > 10.000.000 EN ADELANTE 
+                                <div class="absolute bottom-[-6px] left-1/2 -translate-x-1/2 w-3 h-3 bg-white border-l border-t border-red-400 rotate-45"></div>
+                                </div>
+                            </span>
+                        </div>
+                        <p class="text-lg font-bold mt-3
                             {% if prioridad2 == 'Baja' %} bg-green-500 text-white {% endif %}
                             {% if prioridad2 == 'Media' %} bg-yellow-400 text-white {% endif %}
                             {% if prioridad2 == 'Alta' %} bg-red-500 text-white {% endif %}
-                        ">{{ prioridad2 }}</p>
+                            rounded px-3 py-1 inline-block
+                        ">
+                            {{ prioridad2 }}
+                        </p>
                     </div>
-                    <div class="p-2">
-                        <p class="font-semibold">Prioridad Cartera</p>
-                        <p class="text-lg font-bold 
+                
+                    <!-- Prioridad Cartera -->
+                    <div class="p-2 relative group">
+                        <div class="flex justify-center items-center gap-3">
+                            <p class="font-semibold">Prioridad Cartera</p>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500 cursor-pointer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <line x1="12" y1="16" x2="12" y2="12" />
+                                    <circle cx="12" cy="8" r="1" />
+                                </svg>
+                              
+                                <div class="absolute bottom-full mb-3 left-0 w-72 text-[0.7rem] text-gray-800 bg-white border border-red-400 rounded-xl shadow-md px-4 py-2 z-50 opacity-0 group-hover:opacity-100 transition duration-300 pointer-events-none">
+                                    Prioridad Baja: >= 100.000 A 1.000.000
+                                    <br> Prioridad Media : > 1.000.000 A < 10.000.000
+                                    <br> Prioridad Alta : > 10.000.000 EN ADELANTE 
+                                    <div class="absolute bottom-[-6px] left-6 w-3 h-3 bg-white border-l border-t border-red-400 rotate-45"></div>
+                                </div>
+                            </span>
+                        </div>
+                        <p class="text-lg font-bold mt-3
                             {% if prioridad3 == 'Baja' %} bg-green-500 text-white {% endif %}
                             {% if prioridad3 == 'Media' %} bg-yellow-400 text-white {% endif %}
                             {% if prioridad3 == 'Alta' %} bg-red-500 text-white {% endif %}
-                        ">{{ prioridad3 }}</p>
+                            rounded px-3 py-1 inline-block
+                        ">
+                            {{ prioridad3 }}
+                        </p>
                     </div>
                 </div>
                 
+
                 <div class="grid grid-cols-4 gap-4 border-t border-gray-300 py-4 px-6 text-center text-sm">
                     <div class="border-r border-blue-400 p-2">
                         <p class="font-semibold">Cooviahorro</p>
