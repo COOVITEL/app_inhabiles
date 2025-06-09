@@ -8,6 +8,7 @@ from django.db import transaction
 import pandas as pd
 import requests
 from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
 
 def index(request):
     if request.method == 'POST':
@@ -56,93 +57,87 @@ def close(request):
     return redirect ('index')
 
 def seedAsociados(request):
-    df = pd.read_excel('BASE_INACTIVIDAD_90_120.xlsx', sheet_name='INACTIVIDAD_91_120', skiprows=0)
-    asociados = df.values.tolist()
-    for asociado in asociados:
-        exist = Asociado.objects.filter(cedula=asociado[0]).first()
-        if not exist:
-            aso = Asociado(
-                cedula=asociado[0],
-                nombre=asociado[3],
-                ubicacion=asociado[4],
-                nomina=asociado[8],
-                tipoAsociado=asociado[10],
-                fechaultimaAfiliacion=asociado[11],
-                antiguedad=asociado[13],
-                acumAportes=asociado[28],
-                telefono=asociado[33],
-                movil=asociado[34],
-                correo=asociado[35],
-                cartera=asociado[63],
-                aportes=asociado[28],
-                numeroAhorro=asociado[57],
-                cantidadAhorro=asociado[58],
-                numeroCooviaho=asociado[59],
-                cantidadCooviaho=asociado[60],
-                numeroCdat=asociado[61],
-                cantidadCdat=asociado[62]
-            )
-            aso.save()
-        else:
-            updated = False
-            if exist.nombre != asociado[3]:
-                exist.nombre = asociado[3]
-                updated = True
-            if exist.ubicacion != asociado[4]:
-                exist.ubicacion = asociado[4]
-                updated = True
-            if exist.nomina != asociado[8]:
-                exist.nomina = asociado[8]
-                updated = True
-            if exist.tipoAsociado != asociado[10]:
-                exist.tipoAsociado = asociado[10]
-                updated = True
-            if exist.fechaultimaAfiliacion != asociado[11]:
-                exist.fechaultimaAfiliacion = asociado[11]
-                updated = True
-            if exist.antiguedad != asociado[13]:
-                exist.antiguedad = asociado[13]
-                updated = True
-            if exist.acumAportes != asociado[28]:
-                exist.acumAportes = asociado[28]
-                updated = True
-            if exist.telefono != asociado[33]:
-                exist.telefono = asociado[33]
-                updated = True
-            if exist.movil != asociado[34]:
-                exist.movil = asociado[34]
-                updated = True
-            if exist.correo != asociado[35]:
-                exist.correo = asociado[35]
-                updated = True
-            if exist.cartera != asociado[63]:
-                exist.cartera = asociado[63]
-                updated = True
-            if exist.aportes != asociado[28]:
-                exist.aportes = asociado[28]
-                updated = True
-            if exist.numeroAhorro != asociado[57]:
-                exist.numeroAhorro = asociado[57]
-                updated = True
-            if exist.cantidadAhorro != asociado[58]:
-                exist.cantidadAhorro = asociado[58]
-                updated = True
-            if exist.numeroCooviaho != asociado[59]:
-                exist.numeroCooviaho = asociado[59]
-                updated = True
-            if exist.cantidadCooviaho != asociado[60]:
-                exist.cantidadCooviaho = asociado[60]
-                updated = True
-            if exist.numeroCdat != asociado[61]:
-                exist.numeroCdat = asociado[61]
-                updated = True
-            if exist.cantidadCdat != asociado[62]:
-                exist.cantidadCdat = asociado[62]
-                updated = True
-            if updated:
-                exist.save()
-    return HttpResponse("Se crearon y actualizaron los registros de forma correcta")
+    # 1. Cargar el Excel
+    try:
+        df = pd.read_excel('baseMayo.xlsx', sheet_name='MAYO')
+        asociados_data = df.to_dict(orient='records')
 
+        # 2. Cargar todos los asociados existentes a memoria (usando cedula como clave)
+        existentes = {
+            str(aso.cedula).strip().replace(".0", ""): aso
+            for aso in Asociado.objects.all()
+        }
+
+        nuevos = []
+        actualizados = []
+        campos_actualizables = [
+            'nombre', 'ubicacion', 'nomina', 'tipoAsociado', 'fechaultimaAfiliacion',
+            'antiguedad', 'acumAportes', 'aportes', 'telefono', 'movil', 'correo',
+            'numeroAhorro', 'cantidadAhorro', 'numeroCooviaho', 'cantidadCooviaho',
+            'numeroCdat', 'cantidadCdat', 'cartera', 'rentabilidad', 'salario', 'calificacion'
+        ]
+
+        for data in asociados_data:
+            cedula_raw = data.get('NRO_CEDULA')
+            if pd.isna(cedula_raw):
+                continue
+
+            cedula = str(int(cedula_raw))  # Eliminar .0 si está presente
+            if cedula.endswith('.0'):
+                print(cedula)
+
+            if not cedula:
+                continue
+
+            campos = {
+                'nombre': data.get('NOMBRES'),
+                'ubicacion': data.get('N_UBICA1'),
+                'nomina': data.get('NOMINA'),
+                'tipoAsociado': data.get('K_TIPASO'),
+                'fechaultimaAfiliacion': data.get('F_ULTAFI'),
+                'antiguedad': data.get('F_ANTIGU'),
+                'acumAportes': int(data.get('ACUM_APO')) if not pd.isna(data.get('ACUM_APO')) else 0,
+                'aportes': int(data.get('ACUM_APO')) if not pd.isna(data.get('ACUM_APO')) else 0,
+                'telefono': data.get('FIJO'),
+                'movil': data.get('MOVIL'),
+                'correo': data.get('D_EMAIL'),
+                'numeroAhorro': int(data.get('N_AHORROVISTA')) if not pd.isna(data.get('N_AHORROVISTA')) else 0,
+                'cantidadAhorro': int(data.get('Ah. Vista')) if not pd.isna(data.get('Ah. Vista')) else 0,
+                'numeroCooviaho': int(data.get('N_COVIAHORRO')) if not pd.isna(data.get('N_COVIAHORRO')) else 0,
+                'cantidadCooviaho': int(data.get('Cooviahorro')) if not pd.isna(data.get('Cooviahorro')) else 0,
+                'numeroCdat': int(data.get('N_CDAT')) if not pd.isna(data.get('N_CDAT')) else 0,
+                'cantidadCdat': int(data.get('CDAT')) if not pd.isna(data.get('CDAT')) else 0,
+                'cartera': int(data.get('Cartera')) if not pd.isna(data.get('Cartera')) else 0,
+                'rentabilidad': data.get('RangoRent'),
+                'salario': data.get('SALARIO'),
+                'calificacion': data.get('Calif'),
+            }
+
+            existente = existentes.get(cedula)
+
+            if not existente:
+                nuevos.append(Asociado(cedula=cedula, **campos))
+            else:
+                actualizado = False
+                for campo, valor in campos.items():
+                    if getattr(existente, campo) != valor:
+                        setattr(existente, campo, valor)
+                        actualizado = True
+                if actualizado:
+                    actualizados.append(existente)
+
+        # 3. Guardar en lote
+        if nuevos:
+            Asociado.objects.bulk_create(nuevos, batch_size=1000)
+
+        if actualizados:
+            Asociado.objects.bulk_update(actualizados, campos_actualizables, batch_size=1000)
+
+        return HttpResponse(f"Se crearon {len(nuevos)} y se actualizaron {len(actualizados)} registros correctamente.")
+    except Exception as e:
+        # Loguear el error en consola o archivo
+        print(f"Error procesando asociados: {e}")
+        return JsonResponse({"status": "error", "message": str(e)}, status=500)
 
 def proxy_asesores(request):
     url = "https://adminsimuladores.coovitel.coop/api/asesores/"

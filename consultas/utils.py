@@ -28,3 +28,13 @@ def prioridadCartera(value):
         return "Alta"
     else:
         return ""
+
+def findRentabilidad(value):
+    if value >= 0 and value < 0.05:
+        return "Baja"
+    if value >= 0.05 and value < 0.1:
+        return "Media"
+    if value >= 0.1:
+        return "Alta"
+    else:
+        return ""

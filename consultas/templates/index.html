@@ -21,16 +21,53 @@
 
     {% if asociado %}
         <div class="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-            <div class="relative bg-white w-[900px] max-w-full h-[550px] rounded-lg shadow-xl border-4 border-red-400 overflow-auto flex flex-col">
+            <div class="relative w-[900px] max-w-full h-[550px] rounded-lg shadow-xl border-4 overflow-auto flex flex-col
+                {% if asociado.rentabilidad == 'No Rentable' %}
+                    bg-red-200 border-red-600
+                {% elif asociado.rentabilidad == 'bajo' %}
+                    bg-yellow-200 border-yellow-600
+                {% elif asociado.rentabilidad == 'medio' %}
+                    bg-orange-200 border-orange-600
+                {% else %}
+                    bg-green-200 border-green-600
+                {% endif %}">
                 <a class="absolute top-4 right-4 hover:scale-110 transition-transform duration-200" href="{% url 'close' %}">
                     {% include "close.html" %}
                 </a>
                 <div class="p-6 flex-grow">
                     <h2 class="text-blueCoovitel font-semibold text-2xl">Seguimiento Asociado Inhábil</h2>
-                    <div class="h-1 w-full bg-red-400 my-3"></div>
-                    {% if prioridad1 == "Alta" or prioridad2 == 'Alta' or prioridad3 == 'Alta' %}
+                    <div class="h-1 w-full my-3
+                        {% if asociado.rentabilidad == 'No Rentable' %}
+                            bg-red-600
+                        {% elif asociado.rentabilidad == 'bajo' %}
+                            bg-yellow-600
+                        {% elif asociado.rentabilidad == 'medio' %}
+                            bg-orange-600
+                        {% else %}
+                            bg-green-600
+                        {% endif %}
+                    "></div>
+                    {% comment %} {% if prioridad1 == "Alta" or prioridad2 == 'Alta' or prioridad3 == 'Alta' %}
                         <p class="text-xl font-bold text-black bg-red-100 border-4 border-red-700 items-center justify-center rounded-md p-2 text-center my-2">
                             Asociado de prioridad ALTA, hacer seguimiento y no dejar ir.
+                        </p>
+                    {% endif %} {% endcomment %}
+
+                    {% if asociado.rentabilidad == "alta" %}
+                        <p class="text-xl font-bold text-black bg-green-100 border-4 border-green-700 items-center justify-center rounded-md p-2 text-center my-2">
+                            Asociado de prioridad ALTA, hacer seguimiento y retener
+                        </p>
+                    {% elif asociado.rentabilidad == "medio" %}
+                        <p class="text-xl font-bold text-black bg-orange-100 border-4 border-orange-700 items-center justify-center rounded-md p-2 text-center my-2">
+                            Asociado de prioridad Media, ofrecer productos y retener
+                        </p>
+                    {% elif asociado.rentabilidad == "bajo" %}
+                        <p class="text-xl font-bold text-black bg-yellow-100 border-4 border-yellow-700 items-center justify-center rounded-md p-2 text-center my-2">
+                            Asociado de prioridad baja, ofrecer productos
+                        </p>
+                    {% elif asociado.rentabilidad == "No Rentable" %}
+                        <p class="text-xl font-bold text-black bg-red-100 border-4 border-red-700 items-center justify-center rounded-md p-2 text-center my-2">
+                            Verificar estado del asociado
                         </p>
                     {% endif %}
                     <div class="grid grid-cols-2 gap-4 text-lg">
