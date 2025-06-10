@@ -21,8 +21,8 @@
 
     {% if asociado %}
         <div class="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-            <div class="relative w-[900px] max-w-full h-[550px] rounded-lg shadow-xl border-4 overflow-auto flex flex-col
-                {% if asociado.rentabilidad == 'No Rentable' %}
+            <div class="relative w-[900px] max-w-full h-[550px] rounded-lg shadow-xl border-4 overflow-auto flex flex-col bg-gray-200 border-gray-800">
+                {% comment %} {% if asociado.rentabilidad == 'No Rentable' %}
                     bg-red-200 border-red-600
                 {% elif asociado.rentabilidad == 'bajo' %}
                     bg-yellow-200 border-yellow-600
@@ -30,14 +30,15 @@
                     bg-orange-200 border-orange-600
                 {% else %}
                     bg-green-200 border-green-600
-                {% endif %}">
+                {% endif %}"> 
+                ">{% endcomment %}
                 <a class="absolute top-4 right-4 hover:scale-110 transition-transform duration-200" href="{% url 'close' %}">
                     {% include "close.html" %}
                 </a>
                 <div class="p-6 flex-grow">
-                    <h2 class="text-blueCoovitel font-semibold text-2xl">Seguimiento Asociado Inhábil</h2>
-                    <div class="h-1 w-full my-3
-                        {% if asociado.rentabilidad == 'No Rentable' %}
+                    <h2 class="text-blueCoovitel font-semibold text-2xl">Seguimiento Asociado</h2>
+                    <div class="h-1 w-full my-3 bg-gray-800
+                        {% comment %} {% if asociado.rentabilidad == 'No Rentable' %}
                             bg-red-600
                         {% elif asociado.rentabilidad == 'bajo' %}
                             bg-yellow-600
@@ -45,7 +46,7 @@
                             bg-orange-600
                         {% else %}
                             bg-green-600
-                        {% endif %}
+                        {% endif %} {% endcomment %}
                     "></div>
                     {% comment %} {% if prioridad1 == "Alta" or prioridad2 == 'Alta' or prioridad3 == 'Alta' %}
                         <p class="text-xl font-bold text-black bg-red-100 border-4 border-red-700 items-center justify-center rounded-md p-2 text-center my-2">
@@ -84,13 +85,31 @@
                         <p><span class="font-semibold">Celular:</span> {{ asociado.movil }}</p>
                         <p><span class="font-semibold">Correo:</span> {{ asociado.correo }}</p>
                         <p><span class="font-semibold">Acumulado Aportes:</span> $ {{ asociado.setAcumuladoAportes|intcomma }}</p>
+                        <p class="flex flex-col">
+                            <span class="font-semibold">Rentabilidad: </span>
+                            <span class="font-bold text-center py-2 rounded-md 
+                                {% if asociado.rentabilidad == 'No rentable' %}
+                                    bg-red-600
+                                {% elif asociado.rentabilidad == ' Rentabilidad Baja' %}
+                                    bg-red-600
+                                {% elif asociado.rentabilidad == 'Rentabilidad Media' %}
+                                    bg-yellow-600
+                                {% elif asociado.rentabilidad == 'Rentabilidad Alta' %}
+                                    bg-green-600
+                                {% else %}
+                                    bg-blue-400
+                                {% endif %}">
+                                {{ asociado.rentabilidad }} - {{ porcentajeRen }} %
+                            </span>
+                        </p>
+
                     </div>
                 </div>
                 <div class="grid grid-cols-3 gap-4 border-t border-gray-300 py-4 px-6 text-center text-sm overflow-visible">
                     <!-- Prioridad Productos -->
                     <div class="border-r border-blue-400 p-2 relative group">
                         <div class="flex justify-center items-center gap-3">
-                            <p class="font-semibold">Prioridad Productos</p>
+                            <p class="font-semibold">Profundización Productos</p>
                             <span class="relative z-10">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500 cursor-pointer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <circle cx="12" cy="12" r="10" />
@@ -98,9 +117,9 @@
                                     <circle cx="12" cy="8" r="1" />
                                 </svg>                                  
                                 <div class="absolute bottom-full mb-3 left-1/2 -translate-x-1/2 w-72 text-[0.7rem] text-gray-800 bg-white border border-red-400 rounded-xl shadow-md px-4 py-2 z-50 opacity-0 group-hover:opacity-100 transition duration-300 pointer-events-none">
-                                    Prioridad Baja: 1 Producto
-                                    <br>Prioridad Media: 2 Productos
-                                    <br>Prioridad Alta: 3 Productos
+                                    Profundización Captación Baja: 0 o 1 Producto
+                                    <br>Profundización Captación Media: 2 Productos
+                                    <br>Profundización Captación Alta: 3 Productos
                                     <div class="absolute bottom-[-6px] left-1/2 -translate-x-1/2 w-3 h-3 bg-white border-l border-t border-red-400 rotate-45"></div>
                                 </div>
                             </span>
@@ -111,66 +130,81 @@
                             {% if prioridad1 == 'Alta' %} bg-red-500 text-white {% endif %}
                             rounded px-3 py-1 inline-block
                         ">
-                            {{ prioridad1 }}
+                            Captación: {{ prioridad1 }}
+                        </p>
+                        <p class="text-lg font-bold mt-3
+                            {% if prioridad4 == 'Baja' %} bg-green-500 text-white {% endif %}
+                            {% if prioridad4 == 'Alta' %} bg-red-500 text-white {% endif %}
+                            rounded px-3 py-1 inline-block
+                        ">
+                            Cartera: {{ prioridad4 }}
                         </p>
                     </div>
                 
-                    <!-- Prioridad CDAT -->
-                    <div class="border-r border-blue-400 p-2 relative group">
+                    
+                    <!-- Prioridad Cartera -->
+                    <div class="p-2 relative group border-r border-blue-400">
                         <div class="flex justify-center items-center gap-3">
-                            <p class="font-semibold">Prioridad CDAT</p>
-                            <span class="relative z-10">
+                            <p class="font-semibold">Calificación Cartera</p>
+                            {% comment %}                               
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500 cursor-pointer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <line x1="12" y1="16" x2="12" y2="12" />
+                                    <circle cx="12" cy="8" r="1" />
+                                </svg>
+                                <div class="absolute bottom-full mb-3 left-0 w-72 text-[0.7rem] text-gray-800 bg-white border border-red-400 rounded-xl shadow-md px-4 py-2 z-50 opacity-0 group-hover:opacity-100 transition duration-300 pointer-events-none">
+                                    Profundización Baja: >= 100.000 A 1.000.000
+                                    <br> Profundización Media : > 1.000.000 A < 10.000.000
+                                    <br> Profundización Alta : > 10.000.000 EN ADELANTE 
+                                    <div class="absolute bottom-[-6px] left-6 w-3 h-3 bg-white border-l border-t border-red-400 rotate-45"></div>
+                                </div> {% endcomment %}
+                            </span>
+                        </div>
+                        <p class="text-lg font-bold mt-3
+                            {% if estadoCartera == 'Cartera Normal' %}
+                                bg-green-500 text-white
+                            {% elif estadoCartera == 'No cuenta con Cartera' %}
+                                text-black
+                            {% else %}
+                                bg-red-500 text-white
+                            {% endif %}
+                            rounded px-3 py-1 inline-block
+                        ">
+                            {{ estadoCartera }}: {{ asociado.calificacion }}
+                        </p>
+                    </div>
+
+                    <!-- Prioridad CDAT -->
+                    <div class="p-2 relative group">
+                        <div class="flex justify-center items-center gap-3">
+                            <p class="font-semibold">Estado Aportes</p>
+                            {% comment %} <span class="relative z-10">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500 cursor-pointer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <circle cx="12" cy="12" r="10" />
                                     <line x1="12" y1="16" x2="12" y2="12" />
                                     <circle cx="12" cy="8" r="1" />
                                 </svg>
                                   
-                                <div class="absolute bottom-full mb-3 left-1/2 -translate-x-1/2 w-72 text-[0.7rem] text-gray-800 bg-white border border-red-400 rounded-xl shadow-md px-4 py-2 z-50 opacity-0 group-hover:opacity-100 transition duration-300 pointer-events-none">
-                                    Prioridad Baja: >= 100.000 A 1.000.000
-                                    <br> Prioridad Media : > 1.000.000 A < 10.000.000
-                                    <br> Prioridad Alta : > 10.000.000 EN ADELANTE 
+                                <div class="absolute bottom-full mb-3 -right-16 -translate-x-1/2 w-72 text-[0.7rem] text-gray-800 bg-white border border-red-400 rounded-xl shadow-md px-4 py-2 z-50 opacity-0 group-hover:opacity-100 transition duration-300 pointer-events-none">
+                                    Profundización Baja: >= 100.000 A 1.000.000
+                                    <br> Profundización Media : > 1.000.000 A < 10.000.000
+                                    <br> Profundización Alta : > 10.000.000 EN ADELANTE 
                                 <div class="absolute bottom-[-6px] left-1/2 -translate-x-1/2 w-3 h-3 bg-white border-l border-t border-red-400 rotate-45"></div>
                                 </div>
-                            </span>
+                            </span> {% endcomment %}
                         </div>
                         <p class="text-lg font-bold mt-3
-                            {% if prioridad2 == 'Baja' %} bg-green-500 text-white {% endif %}
-                            {% if prioridad2 == 'Media' %} bg-yellow-400 text-white {% endif %}
-                            {% if prioridad2 == 'Alta' %} bg-red-500 text-white {% endif %}
+                            {% if dias == 'Aportes al día' %}
+                                bg-green-500 text-white
+                            {% else %}
+                                bg-red-500 text-white
+                            {% endif %}
                             rounded px-3 py-1 inline-block
                         ">
-                            {{ prioridad2 }}
+                            {{ dias }}
                         </p>
                     </div>
                 
-                    <!-- Prioridad Cartera -->
-                    <div class="p-2 relative group">
-                        <div class="flex justify-center items-center gap-3">
-                            <p class="font-semibold">Prioridad Cartera</p>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500 cursor-pointer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="10" />
-                                    <line x1="12" y1="16" x2="12" y2="12" />
-                                    <circle cx="12" cy="8" r="1" />
-                                </svg>
-                              
-                                <div class="absolute bottom-full mb-3 left-0 w-72 text-[0.7rem] text-gray-800 bg-white border border-red-400 rounded-xl shadow-md px-4 py-2 z-50 opacity-0 group-hover:opacity-100 transition duration-300 pointer-events-none">
-                                    Prioridad Baja: >= 100.000 A 1.000.000
-                                    <br> Prioridad Media : > 1.000.000 A < 10.000.000
-                                    <br> Prioridad Alta : > 10.000.000 EN ADELANTE 
-                                    <div class="absolute bottom-[-6px] left-6 w-3 h-3 bg-white border-l border-t border-red-400 rotate-45"></div>
-                                </div>
-                            </span>
-                        </div>
-                        <p class="text-lg font-bold mt-3
-                            {% if prioridad3 == 'Baja' %} bg-green-500 text-white {% endif %}
-                            {% if prioridad3 == 'Media' %} bg-yellow-400 text-white {% endif %}
-                            {% if prioridad3 == 'Alta' %} bg-red-500 text-white {% endif %}
-                            rounded px-3 py-1 inline-block
-                        ">
-                            {{ prioridad3 }}
-                        </p>
-                    </div>
                 </div>
                 
 

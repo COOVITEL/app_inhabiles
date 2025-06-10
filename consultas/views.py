@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, HttpResponse
 from .models import Asociado, ResgistrosAsociado
 from django.contrib import messages
 from django.utils.timezone import localtime
-from .utils import prioridadProductos, prioridadCdat, prioridadCartera
+from .utils import *
 from django.core.cache import cache
 from django.db import transaction
 import pandas as pd
@@ -35,6 +35,10 @@ def index(request):
                     'prioridad1': prioridadProductos(int(numCoovi), int(numCdat), int(numVista)),
                     'prioridad2': prioridadCdat(int(valorCdat)),
                     'prioridad3': prioridadCartera(int(valorCartera)),
+                    'prioridad4': prioridadCarteraExiste(int(valorCartera)),
+                    'estadoCartera': estadoCartera(asociado.calificacion),
+                    'dias': estadoAportes(int(asociado.diasVencidos)),
+                    'porcentajeRen': porcentajeRen(float(asociado.rentabilidadPor)) if asociado.rentabilidadPor else "No disponible",
                 })
 
         elif form == "form_entrega":
@@ -59,7 +63,7 @@ def close(request):
 def seedAsociados(request):
     # 1. Cargar el Excel
     try:
-        df = pd.read_excel('baseMayo.xlsx', sheet_name='MAYO')
+        df = pd.read_excel('baseMayoUp.xlsx', sheet_name='MAYO')
         asociados_data = df.to_dict(orient='records')
 
         # 2. Cargar todos los asociados existentes a memoria (usando cedula como clave)
@@ -74,7 +78,8 @@ def seedAsociados(request):
             'nombre', 'ubicacion', 'nomina', 'tipoAsociado', 'fechaultimaAfiliacion',
             'antiguedad', 'acumAportes', 'aportes', 'telefono', 'movil', 'correo',
             'numeroAhorro', 'cantidadAhorro', 'numeroCooviaho', 'cantidadCooviaho',
-            'numeroCdat', 'cantidadCdat', 'cartera', 'rentabilidad', 'salario', 'calificacion'
+            'numeroCdat', 'cantidadCdat', 'cartera', 'rentabilidad', 'rentabilidadPor',
+            'salario', 'calificacion', 'diasVencidos'
         ]
 
         for data in asociados_data:
@@ -83,8 +88,6 @@ def seedAsociados(request):
                 continue
 
             cedula = str(int(cedula_raw))  # Eliminar .0 si está presente
-            if cedula.endswith('.0'):
-                print(cedula)
 
             if not cedula:
                 continue
@@ -108,9 +111,11 @@ def seedAsociados(request):
                 'numeroCdat': int(data.get('N_CDAT')) if not pd.isna(data.get('N_CDAT')) else 0,
                 'cantidadCdat': int(data.get('CDAT')) if not pd.isna(data.get('CDAT')) else 0,
                 'cartera': int(data.get('Cartera')) if not pd.isna(data.get('Cartera')) else 0,
-                'rentabilidad': data.get('RangoRent'),
+                'rentabilidad': data.get('tipólogiaTipologia'),
+                'rentabilidadPor': data.get('Rent. EA'),
                 'salario': data.get('SALARIO'),
                 'calificacion': data.get('Calif'),
+                'diasVencidos': int(data.get('DIAS_VENCIDOS')) if not pd.isna(data.get('DIAS_VENCIDOS')) else 0,
             }
 
             existente = existentes.get(cedula)

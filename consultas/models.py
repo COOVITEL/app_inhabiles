@@ -22,8 +22,10 @@ class Asociado(models.Model):
     numeroCdat = models.CharField(max_length=200)
     cantidadCdat = models.CharField(max_length=200)
     rentabilidad = models.CharField(max_length=200, blank=True, null=True)
+    rentabilidadPor = models.CharField(max_length=200, blank=True, null=True)
     salario = models.CharField(max_length=200, blank=True, null=True)
     calificacion = models.CharField(max_length=200, blank=True, null=True)
+    diasVencidos = models.CharField(max_length=200, blank=True, null=True)
     
     def __str__(self):
         return f"{self.nombre} - {self.cedula}"
