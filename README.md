@@ -1,23 +1,39 @@
-## Actualizacion de registros
+## 📄 Actualización de Registros de Asociados
 
-Para actualizar los registros de los asociados, se debe cargar el archivo excel o xlsx.
-Este archivo es suministrado por el colaborador Cristian Molina del equipo de Planeacion.
-El archivo debe tener el nombre "rentabilidad.xlsx" con el nombre de hoja Rentabilidad
+Este módulo permite actualizar los registros de los asociados mediante un archivo Excel suministrado por el equipo de Planeación.
 
-Recuerde que este no debe cambiar su formato o nombre de las columnas.
+### 📥 Requisitos del archivo
 
-Para actualizarlos ejecute o abra la vista con el nombre "created" o "seedAsociados" en la url: createAndUpdateAsociados/
+- **Formato**: `.xlsx` (Excel)
+- **Nombre del archivo**: `rentabilidad.xlsx`
+- **Nombre de la hoja**: `Rentabilidad`
+- **Importante**: No modificar el **nombre de las columnas** ni su **estructura**.
 
-Para validar su ejecucion puede hacerlo de forma local en su servidor, corriendo la aplicacion con el comando
-""" python3 manage.py runserver """
-Y en otra ventana putty correr el comando
-""" curl http://127.0.0.1:8000/createAndUpdateAsociados/ """
+El archivo debe ser proporcionado por el colaborador **Cristian Molina** del equipo de Planeación.
 
-Esto correra y actualizara el listado
+---
+
+### 🚀 ¿Cómo actualizar los registros?
+
+1. Asegúrate de que el archivo esté ubicado correctamente en el servidor.
+2. Ejecuta la vista correspondiente accediendo a la siguiente URL:
 
 
-### Envio archivo desde otro servidor
+> También puedes acceder mediante los nombres de vista: `"created"` o `"seedAsociados"`.
 
-Para enviar el archvio puede hacerlo mediante el comando
-""" scp -P 22 nombre_del_archivo usuario_servidor_final@IP:/home/ubicacion_final """
-luego se pedira la password del usuario final o del servidor final
+---
+
+### ⚙️ Ejecución local
+
+1. Inicia el servidor local:
+
+``` python3 manage.py runserver ```
+
+y en otra ventana putty ejecute
+
+```curl http://127.0.0.1:8000/createAndUpdateAsociados/```
+
+### Envio del Archivo
+
+```scp -P 22 nombre_del_archivo usuario@IP:/home/ubicacion_final```
+
